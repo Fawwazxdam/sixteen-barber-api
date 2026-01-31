@@ -22,9 +22,6 @@ export class AuthService {
       sub: user.id,
       role: user.role,
     });
-    console.log("JWT_SECRET SIGN:", process.env.JWT_SECRET);
-    console.log("Generated token:", token);
-    // console.log(res);
 
     res.cookie("access_token", token, {
       httpOnly: true,

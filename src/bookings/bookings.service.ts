@@ -37,6 +37,34 @@ export class BookingsService {
         return this.repo.findAll();
     }
 
+    getBookingsByBarber(barberId: string) {
+        return this.repo.findBookingsByBarber(barberId);
+    }
+
+    async getBarberBookingsByDate(dateStr: string, barberId: string) {
+        if (!barberId) {
+            throw new BadRequestException("barberId is required");
+        }
+
+        const date = dateStr ? new Date(dateStr) : new Date();
+        if (isNaN(date.getTime())) {
+            throw new BadRequestException("Invalid date format");
+        }
+
+        return this.repo.findBookingsByBarberAndDate(barberId, date);
+    }
+
+    async updateBookingStatus(
+        bookingId: string,
+        status: "pending" | "completed" | "cancelled",
+    ) {
+        if (!["pending", "completed", "cancelled"].includes(status)) {
+            throw new BadRequestException("Invalid status");
+        }
+
+        return this.repo.updateStatus(bookingId, status);
+    }
+
     async getAvailableSlots(dateStr: string, barberId: string) {
         if (!dateStr || dateStr.trim() === '') {
             throw new BadRequestException("Parameter 'date' is required and must be a valid date string");

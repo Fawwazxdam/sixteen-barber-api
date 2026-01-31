@@ -76,5 +76,82 @@ export class BookingsRepository {
                 )
             );
     }
+
+    async findBookingsByBarber(barberId: string) {
+        return this.drizzle.db
+            .select({
+                id: bookings.id,
+                barberId: bookings.barberId,
+                serviceId: bookings.serviceId,
+                customerUserId: bookings.customerUserId,
+                customerName: bookings.customerName,
+                customerPhone: bookings.customerPhone,
+                customerNote: bookings.customerNote,
+                bookingDate: bookings.bookingDate,
+                status: bookings.status,
+                createdAt: bookings.createdAt,
+                updatedAt: bookings.updatedAt,
+                duration: services.duration,
+            })
+            .from(bookings)
+            .innerJoin(services, eq(bookings.serviceId, services.id))
+            .where(eq(bookings.barberId, barberId));
+    }
+
+    async findBookingsByBarberAndDate(barberId: string, date: Date) {
+        const start = new Date(date);
+        start.setHours(0, 0, 0, 0);
+
+        const end = new Date(date);
+        end.setHours(23, 59, 59, 999);
+
+        return this.drizzle.db
+            .select({
+                id: bookings.id,
+                barberId: bookings.barberId,
+
+                serviceId: bookings.serviceId,
+                serviceName: services.name, // 👈 TAMBAHAN INI
+
+                customerUserId: bookings.customerUserId,
+                customerName: bookings.customerName,
+                customerPhone: bookings.customerPhone,
+                customerNote: bookings.customerNote,
+
+                bookingDate: bookings.bookingDate,
+                status: bookings.status,
+
+                duration: services.duration,
+
+                createdAt: bookings.createdAt,
+                updatedAt: bookings.updatedAt,
+            })
+            .from(bookings)
+            .innerJoin(services, eq(bookings.serviceId, services.id))
+            .where(
+                and(
+                    eq(bookings.barberId, barberId),
+                    gte(bookings.bookingDate, start),
+                    lt(bookings.bookingDate, end),
+                )
+            )
+            .orderBy(bookings.bookingDate);
+    }
+
+
+    async updateStatus(
+        bookingId: string,
+        status: "pending" | "completed" | "cancelled",
+    ) {
+        return this.drizzle.db
+            .update(bookings)
+            .set({
+                status,
+                updatedAt: new Date(),
+            })
+            .where(eq(bookings.id, bookingId))
+            .returning();
+    }
+
 }
 

@@ -22,7 +22,6 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   async createBarber(@Body() dto: CreateBarberDto) {
-    // console.log("DTO:", dto);
     return this.usersService.createBarber(dto);
   }
 

@@ -22,7 +22,6 @@ async function seedAdmin() {
     role: "ADMIN",
   });
 
-  console.log("✅ Admin account created");
   await client.end();
 }
 

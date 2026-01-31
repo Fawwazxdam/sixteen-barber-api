@@ -9,15 +9,11 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     constructor(private usersRepo: UsersRepository) {
         super({
             jwtFromRequest: (req: Request) => {
-                console.log("REQ COOKIES:", req.cookies);
-                console.log("HEADERS COOKIE:", req.headers.cookie);
-                // console.log("PARSED COOKIES:", req.cookies);
                 if (!req || !req.cookies) return null;
                 return req.cookies["access_token"]; // 🔥 INI KUNCI
             },
             secretOrKey: process.env.JWT_SECRET,
         });
-        console.log("JWT_SECRET VERIFY:", process.env.JWT_SECRET);
     }
 
     async validate(payload: { sub: string; role: string }) {
