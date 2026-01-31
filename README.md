@@ -1,98 +1,269 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="120" alt="Nest Logo" /></a>
-</p>
+# Sixteen Barber API Documentation
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+This API provides backend services for the Sixteen Barber application, a barber shop booking system built with NestJS and PostgreSQL.
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg" alt="Donate us"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow" alt="Follow us on Twitter"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
-
-## Description
-
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
-
-## Project setup
-
-```bash
-$ npm install
+## Base URL
+```
+http://localhost:3000
 ```
 
-## Compile and run the project
+## Authentication
+The API uses JWT (JSON Web Tokens) for authentication. Include the token in the Authorization header for protected endpoints:
 
-```bash
-# development
-$ npm run start
-
-# watch mode
-$ npm run start:dev
-
-# production mode
-$ npm run start:prod
+```
+Authorization: Bearer <your_jwt_token>
 ```
 
-## Run tests
+### Login
+To obtain a JWT token, use the login endpoint.
 
-```bash
-# unit tests
-$ npm run test
+## Data Models
 
-# e2e tests
-$ npm run test:e2e
-
-# test coverage
-$ npm run test:cov
+### User
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "email": "string",
+  "role": "ADMIN" | "BARBER",
+  "createdAt": "timestamp"
+}
 ```
 
-## Deployment
-
-When you're ready to deploy your NestJS application to production, there are some key steps you can take to ensure it runs as efficiently as possible. Check out the [deployment documentation](https://docs.nestjs.com/deployment) for more information.
-
-If you are looking for a cloud-based platform to deploy your NestJS application, check out [Mau](https://mau.nestjs.com), our official platform for deploying NestJS applications on AWS. Mau makes deployment straightforward and fast, requiring just a few simple steps:
-
-```bash
-$ npm install -g @nestjs/mau
-$ mau deploy
+### Service
+```json
+{
+  "id": "uuid",
+  "name": "string",
+  "price": "number",
+  "duration": "number", // in minutes
+  "isActive": "boolean"
+}
 ```
 
-With Mau, you can deploy your application in just a few clicks, allowing you to focus on building features rather than managing infrastructure.
+### Booking
+```json
+{
+  "id": "uuid",
+  "barberId": "uuid",
+  "serviceId": "uuid",
+  "customerUserId": "uuid?", // optional
+  "customerName": "string",
+  "customerPhone": "string",
+  "customerNote": "string?", // optional
+  "bookingDate": "timestamp",
+  "status": "pending" | "confirmed" | "cancelled" | "completed",
+  "createdAt": "timestamp",
+  "updatedAt": "timestamp"
+}
+```
 
-## Resources
+## Endpoints
 
-Check out a few resources that may come in handy when working with NestJS:
+### Authentication
 
-- Visit the [NestJS Documentation](https://docs.nestjs.com) to learn more about the framework.
-- For questions and support, please visit our [Discord channel](https://discord.gg/G7Qnnhy).
-- To dive deeper and get more hands-on experience, check out our official video [courses](https://courses.nestjs.com/).
-- Deploy your application to AWS with the help of [NestJS Mau](https://mau.nestjs.com) in just a few clicks.
-- Visualize your application graph and interact with the NestJS application in real-time using [NestJS Devtools](https://devtools.nestjs.com).
-- Need help with your project (part-time to full-time)? Check out our official [enterprise support](https://enterprise.nestjs.com).
-- To stay in the loop and get updates, follow us on [X](https://x.com/nestframework) and [LinkedIn](https://linkedin.com/company/nestjs).
-- Looking for a job, or have a job to offer? Check out our official [Jobs board](https://jobs.nestjs.com).
+#### POST /auth/login
+Login to get JWT token.
 
-## Support
+**Request Body:**
+```json
+{
+  "email": "string",
+  "password": "string"
+}
+```
 
-Nest is an MIT-licensed open source project. It can grow thanks to the sponsors and support by the amazing backers. If you'd like to join them, please [read more here](https://docs.nestjs.com/support).
+**Response:**
+```json
+{
+  "accessToken": "string"
+}
+```
 
-## Stay in touch
+**Example:**
+```bash
+curl -X POST http://localhost:3000/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{"email": "admin@example.com", "password": "password"}'
+```
 
-- Author - [Kamil Myśliwiec](https://twitter.com/kammysliwiec)
-- Website - [https://nestjs.com](https://nestjs.com/)
-- Twitter - [@nestframework](https://twitter.com/nestframework)
+### Bookings
+
+#### POST /bookings
+Create a new booking.
+
+**Request Body:**
+```json
+{
+  "barberId": "string",
+  "serviceId": "string",
+  "customerUserId": "string?", // optional
+  "customerName": "string",
+  "customerPhone": "string",
+  "customerNote": "string?", // optional
+  "bookingTime": "string", // ISO date string
+  "duration": "number" // min 30
+}
+```
+
+**Response:** Booking object
+
+#### GET /bookings
+Get all bookings.
+
+**Response:** Array of Booking objects
+
+#### GET /bookings/available-slots
+Get available time slots for a barber on a specific date.
+
+**Query Parameters:**
+- `date`: string (YYYY-MM-DD)
+- `barberId`: string
+
+**Response:** Array of available time slots (strings in HH:mm format)
+
+**Example:**
+```bash
+curl "http://localhost:3000/bookings/available-slots?date=2023-12-01&barberId=uuid"
+```
+
+### Services
+
+#### POST /services
+Create a new service. (Requires ADMIN role)
+
+**Request Body:**
+```json
+{
+  "name": "string",
+  "price": "number", // min 0
+  "duration": "number", // min 1, in minutes
+  "isActive": "boolean?" // optional, default true
+}
+```
+
+**Response:** Service object
+
+#### GET /services
+Get all services.
+
+**Response:** Array of Service objects
+
+#### PATCH /services/:id
+Update a service. (Requires ADMIN role)
+
+**Request Body:** (all fields optional)
+```json
+{
+  "name": "string?",
+  "price": "number?",
+  "duration": "number?",
+  "isActive": "boolean?"
+}
+```
+
+**Response:** Updated Service object
+
+#### PATCH /services/:id/toggle-active
+Toggle the active status of a service. (Requires ADMIN role)
+
+**Response:** Updated Service object
+
+### Users (Barbers)
+
+#### POST /users/barbers
+Create a new barber. (Requires ADMIN role)
+
+**Request Body:**
+```json
+{
+  "email": "string",
+  "name": "string",
+  "password": "string" // min 6 characters
+}
+```
+
+**Response:** User object (barber)
+
+#### GET /users/barbers
+Get all barbers. (Requires ADMIN role)
+
+**Response:** Array of User objects (barbers only)
+
+#### PATCH /users/barbers/:id
+Update a barber. (Requires ADMIN role)
+
+**Request Body:** (all fields optional)
+```json
+{
+  "name": "string?",
+  "password": "string?" // min 6 characters
+}
+```
+
+**Response:** Updated User object
+
+## Error Responses
+All endpoints may return error responses in the following format:
+
+```json
+{
+  "statusCode": 400,
+  "message": "Validation failed",
+  "error": "Bad Request"
+}
+```
+
+Common status codes:
+- 400: Bad Request (validation errors)
+- 401: Unauthorized (invalid or missing JWT)
+- 403: Forbidden (insufficient permissions)
+- 404: Not Found
+- 500: Internal Server Error
+
+## Setup and Running
+
+### Prerequisites
+- Node.js
+- PostgreSQL
+- npm
+
+### Installation
+```bash
+npm install
+```
+
+### Environment Variables
+Create a `.env` file with:
+```
+DATABASE_URL=postgresql://user:password@localhost:5432/sixteen_barber
+JWT_SECRET=your_jwt_secret
+```
+
+### Database Setup
+```bash
+npm run db:generate
+npm run db:migrate
+npm run db:seed
+```
+
+### Running the Application
+```bash
+# Development
+npm run start:dev
+
+# Production
+npm run start:prod
+```
+
+## Testing
+```bash
+# Unit tests
+npm run test
+
+# E2E tests
+npm run test:e2e
+```
 
 ## License
-
-Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+MIT

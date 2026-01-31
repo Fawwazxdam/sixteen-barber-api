@@ -7,10 +7,12 @@ import { UsersRepository } from "../users/users.repository";
 import { DrizzleModule } from "../drizzle/drizzle.module";
 import { ConfigModule, ConfigService } from "@nestjs/config";
 import { RolesGuard } from "./roles.guard";
+import { UsersModule } from "src/users/users.module";
 
 @Module({
   imports: [
-    DrizzleModule, // ⬅️ INI KUNCI
+    DrizzleModule,
+    UsersModule,
     JwtModule.registerAsync({
         imports: [ConfigModule],
         inject: [ConfigService],

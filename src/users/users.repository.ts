@@ -7,6 +7,14 @@ import { and, eq } from "drizzle-orm";
 export class UsersRepository {
   constructor(private drizzle: DrizzleService) { }
 
+  async findById(id: string) {
+    return this.drizzle.db
+      .select()
+      .from(users)
+      .where(eq(users.id, id))
+      .then(res => res[0]);
+  }
+
   findByEmail(email: string) {
     return this.drizzle.db
       .select()

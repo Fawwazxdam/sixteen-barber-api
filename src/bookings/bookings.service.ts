@@ -38,7 +38,14 @@ export class BookingsService {
     }
 
     async getAvailableSlots(dateStr: string, barberId: string) {
+        if (!dateStr || dateStr.trim() === '') {
+            throw new BadRequestException("Parameter 'date' is required and must be a valid date string");
+        }
+
         const date = new Date(dateStr);
+        if (isNaN(date.getTime())) {
+            throw new BadRequestException("Parameter 'date' must be a valid date in YYYY-MM-DD format");
+        }
 
         const allSlots = generateTimeSlots(date);
         const bookings = await this.repo.findBookingsByDate(date);

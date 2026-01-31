@@ -22,12 +22,13 @@ export class UsersController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles("ADMIN")
   async createBarber(@Body() dto: CreateBarberDto) {
+    // console.log("DTO:", dto);
     return this.usersService.createBarber(dto);
   }
 
   @Get("barbers")
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  @Roles("ADMIN")
+  // @UseGuards(JwtAuthGuard, RolesGuard)
+  // @Roles("ADMIN")
   getBarbers() {
     return this.usersService.getBarbers();
   }

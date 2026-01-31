@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Patch, Post } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Patch, Post } from "@nestjs/common";
 import { ServicesService } from "./services.service";
 import { CreateServiceDto } from "./dto/create-services.dto";
 import { UpdateServiceDto } from "./dto/update-services.dto";
@@ -7,7 +7,7 @@ import { UpdateServiceDto } from "./dto/update-services.dto";
 
 @Controller("services")
 export class ServicesController {
-  constructor(private readonly service: ServicesService) {}
+  constructor(private readonly service: ServicesService) { }
 
   @Post()
   create(@Body() dto: CreateServiceDto) {
@@ -30,5 +30,10 @@ export class ServicesController {
   @Patch(":id/toggle-active")
   toggleActive(@Param("id") id: string) {
     return this.service.toggleActive(id);
+  }
+
+  @Delete(":id")
+  remove(@Param("id") id: string) {
+    return this.service.delete(id);
   }
 }

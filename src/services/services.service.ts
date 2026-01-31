@@ -36,4 +36,13 @@ export class ServicesService {
       isActive: !service[0].isActive,
     });
   }
+
+  async delete(id: string) {
+    const service = await this.repo.findById(id);
+    if (!service.length) {
+      throw new NotFoundException("Service tidak ditemukan");
+    }
+
+    return this.repo.delete(id);
+  }
 }

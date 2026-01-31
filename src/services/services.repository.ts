@@ -35,4 +35,8 @@ export class ServicesRepository {
       .where(eq(services.id, id))
       .returning();
   }
+
+  delete(id: string) {
+    return this.drizzle.db.delete(services).where(eq(services.id, id));
+  }
 }
