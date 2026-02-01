@@ -238,7 +238,32 @@ Create a `.env` file with:
 ```
 DATABASE_URL=postgresql://user:password@localhost:5432/sixteen_barber
 JWT_SECRET=your_jwt_secret
+NODE_ENV=development
+APP_PORT=4001
+FRONTEND_URL=http://localhost:3000,https://next-barber-phi.vercel.app
 ```
+
+### Cookie Configuration
+The API uses HTTP-only cookies for JWT token storage. Cookie settings are automatically configured based on `NODE_ENV`:
+
+**Development (NODE_ENV=development):**
+- `sameSite: "lax"` - Allows same-site requests
+- `secure: false` - Works with HTTP
+- `partitioned: false` - No partitioning needed
+
+**Production (NODE_ENV=production):**
+- `sameSite: "none"` - Allows cross-site requests
+- `secure: true` - Requires HTTPS
+- `partitioned: true` - CHIPS compliance for modern browsers
+
+### CORS Configuration
+The API is configured to accept requests from specific origins defined in `FRONTEND_URL` environment variable. Multiple origins can be separated by commas.
+
+**Important:** When deploying with HTTPS, ensure:
+1. Frontend is also using HTTPS
+2. `NODE_ENV=production` is set
+3. `FRONTEND_URL` includes the production frontend domain
+4. Database connection uses SSL (`sslmode=require`)
 
 ### Database Setup
 ```bash

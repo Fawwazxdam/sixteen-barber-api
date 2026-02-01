@@ -25,9 +25,10 @@ export class AuthService {
 
     res.cookie("access_token", token, {
       httpOnly: true,
-      sameSite: "none",
-      secure: true, // true kalau https
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.NODE_ENV === 'production',
       path: "/",
+      partitioned: process.env.NODE_ENV === 'production',
     });
 
     return { success: true };
