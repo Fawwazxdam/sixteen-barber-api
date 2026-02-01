@@ -33,7 +33,7 @@ export class AuthController {
   logout(@Res({ passthrough: true }) res: Response) {
     res.clearCookie("access_token", {
       httpOnly: true,
-      sameSite: "lax",
+      sameSite: "strict",
       secure: true, // true kalau https
       path: "/",
     });
