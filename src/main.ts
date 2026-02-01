@@ -11,8 +11,8 @@ async function bootstrap() {
     {
       origin: ["https://next-barber-phi.vercel.app", "http://localhost:3000"],
       credentials: true,
-      // methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-      // allowedHeaders: ["Content-Type", "Authorization"],
+      methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization"],
     }
   );
   app.useGlobalPipes(
