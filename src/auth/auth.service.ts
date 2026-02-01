@@ -26,7 +26,7 @@ export class AuthService {
     res.cookie("access_token", token, {
       httpOnly: true,
       sameSite: "lax",
-      secure: false, // true kalau https
+      secure: true, // true kalau https
       path: "/",
     });
 

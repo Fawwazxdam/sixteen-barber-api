@@ -34,7 +34,7 @@ export class AuthController {
     res.clearCookie("access_token", {
       httpOnly: true,
       sameSite: "lax",
-      secure: false, // true kalau https
+      secure: true, // true kalau https
       path: "/",
     });
 
