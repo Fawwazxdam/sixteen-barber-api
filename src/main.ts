@@ -12,7 +12,7 @@ async function bootstrap() {
       origin: [
         "https://sixteen-barber.vercel.app",
         "http://localhost:3000",
-        "https://barber-api.magentaa.space"
+        // "https://barber-api.magentaa.space"
       ],
       credentials: true,
       methods: ["GET","HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
