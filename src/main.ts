@@ -9,7 +9,7 @@ async function bootstrap() {
   app.use(cookieParser());
   app.enableCors(
     {
-      origin: ["https://next-barber-phi.vercel.app", "http://localhost:3000"],
+      origin: ["https://sixteen-barber.vercel.app/", "http://localhost:3000"],
       credentials: true,
       methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
       allowedHeaders: ["Content-Type", "Authorization"],
