@@ -7,18 +7,18 @@ import cookieParser from 'cookie-parser';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(cookieParser());
-  // app.enableCors(
-  //   {
-  //     origin: [
-  //       "https://sixteen-barber.vercel.app",
-  //       "http://localhost:3000",
-  //       // "https://barber-api.magentaa.space"
-  //     ],
-  //     credentials: true,
-  //     methods: ["GET","HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
-  //     allowedHeaders: ["Content-Type", "Authorization", "Accept"],
-  //   }
-  // );
+  app.enableCors(
+    {
+      origin: [
+        "https://sixteen-barber.vercel.app",
+        "http://localhost:3000",
+        // "https://barber-api.magentaa.space"
+      ],
+      credentials: true,
+      methods: ["GET", "HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization", "Accept"],
+    }
+  );
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true,
