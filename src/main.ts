@@ -15,8 +15,8 @@ async function bootstrap() {
         "https://barber-api.magentaa.space"
       ],
       credentials: true,
-      methods: ["GET", "POST", "PATCH", "DELETE", "OPTIONS"],
-      allowedHeaders: ["Content-Type", "Authorization"],
+      methods: ["GET","HEAD", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+      allowedHeaders: ["Content-Type", "Authorization", "Accept"],
     }
   );
   app.useGlobalPipes(
