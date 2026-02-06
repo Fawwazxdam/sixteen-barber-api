@@ -31,6 +31,6 @@ export class AuthService {
       partitioned: process.env.NODE_ENV === 'production',
     });
 
-    return { success: true };
+    return { success: true, accessToken: token };
   }
 }
