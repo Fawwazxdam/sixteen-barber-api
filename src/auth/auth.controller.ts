@@ -1,46 +1,32 @@
-import {
-  Controller,
-  Post,
-  Body,
-  UseGuards,
-  Get,
-  Req,
-  Res,
-  HttpCode,
-  HttpStatus,
-} from "@nestjs/common";
+import { Controller, Post, Body, UseGuards, Get, Request, Req, Res, UseInterceptors,  } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { JwtAuthGuard } from "./jwt-auth.guard";
-import { Throttle } from "@nestjs/throttler";
-import type { Request, Response } from "express";
-
-declare global {
-  namespace Express {
-    interface Request {
-      user?: any;
-    }
-  }
-}
+import type { Response } from "express";
+import { Throttle, ThrottlerGuard } from '@nestjs/throttler'; // Tambah ini
 
 @Controller("auth")
+@UseGuards(ThrottlerGuard) // Rate limiting global
 export class AuthController {
   constructor(private auth: AuthService) {}
 
-  // ✅ Rate limiting: max 5 login attempts per menit
-  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post("login")
-  @HttpCode(HttpStatus.OK)
+  @Throttle({ default: { limit: 5, ttl: 60000 } }) // 5 attempts per minute for login
   login(
     @Body() body: { email: string; password: string },
-    @Res({ passthrough: true }) res: Response
+    @Res({ passthrough: true }) res: Response,
   ) {
     return this.auth.login(body.email, body.password, res);
   }
 
+  @Post("refresh")
+  refresh(@Req() req, @Res({ passthrough: true }) res: Response) {
+    return this.auth.refresh(req.cookies["refresh_token"], res);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get("me")
-  me(@Req() req: Request) {
-    const user = req.user as any;
+  me(@Req() req) {
+    const user = req.user;
     return {
       id: user.id,
       name: user.name,
@@ -49,26 +35,22 @@ export class AuthController {
     };
   }
 
-  // ✅ Endpoint untuk refresh access token
-  @Post("refresh")
-  @HttpCode(HttpStatus.OK)
-  refresh(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response
-  ) {
-    const refreshToken = req.cookies["refresh_token"];
-    console.log('[REFRESH] Cookie refresh_token received:', refreshToken);
-    console.log('[REFRESH] All cookies:', JSON.stringify(req.cookies));
-    return this.auth.refreshAccessToken(refreshToken, res);
-  }
-
   @Post("logout")
-  @HttpCode(HttpStatus.OK)
-  logout(
-    @Req() req: Request,
-    @Res({ passthrough: true }) res: Response
-  ) {
-    const refreshToken = req.cookies["refresh_token"];
-    return this.auth.logout(refreshToken, res);
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie("access_token", {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: "/",
+      partitioned: process.env.NODE_ENV === 'production',
+    });
+    res.clearCookie("refresh_token", {
+      httpOnly: true,
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      path: "/",
+      partitioned: process.env.NODE_ENV === 'production',
+    });
+    return { message: "Logged out" };
   }
 }
