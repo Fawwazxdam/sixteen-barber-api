@@ -10,6 +10,7 @@ async function bootstrap() {
   app.enableCors(
     {
       origin: [
+        "https://barber.magentaa.space",
         "https://sixteen-barber.vercel.app",
         "http://localhost:3000",
         // "https://barber-api.magentaa.space"
